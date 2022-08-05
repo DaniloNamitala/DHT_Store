@@ -22,5 +22,7 @@ DHT_Store é uma loja online de variedades onde o cliente pode ser cadastrar e f
 
 ### Autores
 Danilo Aparecido Namitala 
+
 Tulio Oliveira Cruz
+
 Henrique Silva Rabelo
