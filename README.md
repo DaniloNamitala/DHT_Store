@@ -5,7 +5,7 @@ DHT_Store é uma loja online de variedades onde o cliente pode ser cadastrar e f
 
 ### Tecnologias
 
-- Angular JS
+- React JS
 - Node JS
 - MySql
 - HTML5
