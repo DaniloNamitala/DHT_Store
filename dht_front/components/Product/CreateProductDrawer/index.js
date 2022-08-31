@@ -21,7 +21,9 @@ export const CreateProductDrawer = ({setCurrent}) => {
             price:0,
           }}
           onSubmit={(values) => {
-            alert(JSON.stringify(values, null, 2));
+            const res = fetch("0.0.0.0:3001/insertProduct", values)
+            const data = res.json()
+            alert(JSON.stringify(data, null, 2));
           }}
         >
           {({ handleSubmit, values ,setFieldValue }) => (
