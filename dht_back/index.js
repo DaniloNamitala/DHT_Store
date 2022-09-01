@@ -49,3 +49,11 @@ app.post("/insertProduct", (req, res) => {
     }
   });
 });
+
+app.get("/getProductsList", (req, res) => {
+  let SQL = "SELECT * FROM produto";
+
+  database.query(SQL, (err, result) => {
+    if (!err) res.send(result)
+  })
+})
