@@ -14,7 +14,7 @@ DHT_Store é uma loja online de variedades onde o cliente pode ser cadastrar e f
 - React JS: `18.2.0`
 - Next JS: `12.2.5`
 - Node JS: `16.14.2`
-- MySql
+- MySql: `8.0.30`
 - HTML5: `5.2.0`
 - CSS3
 
