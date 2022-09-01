@@ -39,7 +39,7 @@ export default function Home() {
                 title: product.title,
                 description: product.description,
                 price: product.price,
-                qtnd: product.qtnd,
+                qty: product.qty,
               };
               return (
                 <CardProduct

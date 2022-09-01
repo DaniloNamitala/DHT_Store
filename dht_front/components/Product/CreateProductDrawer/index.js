@@ -1,4 +1,5 @@
 import { Formik, Field } from "formik";
+
 import {
   Button,
   FormControl,
@@ -17,13 +18,22 @@ export const CreateProductDrawer = ({setCurrent}) => {
           initialValues={{
             title: "",
             description: "",
-            qtnd: 0,
+            qty: 0,
             price:0,
           }}
-          onSubmit={(values) => {
-            const res = fetch("0.0.0.0:3001/insertProduct", values)
-            const data = res.json()
-            alert(JSON.stringify(data, null, 2));
+          onSubmit={async (values) => {
+            const rawResponse = await fetch("http://localhost:3001/insertProduct", {
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(values)
+            })
+            const content = await rawResponse.json();
+            if (content['result'] != "SUCCESS") {
+              alert("Algo deu errado, produto não adicionado")
+            }
           }}
         >
           {({ handleSubmit, values ,setFieldValue }) => (
@@ -49,13 +59,13 @@ export const CreateProductDrawer = ({setCurrent}) => {
                   />
                 </FormControl>
                 <FormControl >
-                  <FormLabel htmlFor="qtnd">Quantidade</FormLabel>
-                  <NumberInput value={values.qtnd} onChange={val => setFieldValue('qtnd', val)}>
+                  <FormLabel htmlFor="qty">Quantidade</FormLabel>
+                  <NumberInput value={values.qty} onChange={val => setFieldValue('qty', val)}>
                     <NumberInputField />
                   </NumberInput>
                 </FormControl>
                 <FormControl >
-                  <FormLabel htmlFor="qtnd">Preço</FormLabel>
+                  <FormLabel htmlFor="price">Preço</FormLabel>
                   <NumberInput value={values.price} onChange={val => setFieldValue('price', val)}>
                     <NumberInputField />
                   </NumberInput>

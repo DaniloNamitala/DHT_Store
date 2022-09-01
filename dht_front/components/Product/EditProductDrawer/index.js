@@ -18,7 +18,7 @@ export const EditProductDrawer = ({ product, ...props }) => {
         initialValues={{
           title: product.title,
           description: product.description,
-          qtnd: product.qtnd,
+          qty: product.qty,
           price: product.price,
         }}
         onSubmit={(values) => {
@@ -48,16 +48,16 @@ export const EditProductDrawer = ({ product, ...props }) => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="qtnd">Quantidade</FormLabel>
+                <FormLabel htmlFor="qty">Quantidade</FormLabel>
                 <NumberInput
-                  value={values.qtnd}
-                  onChange={(val) => setFieldValue("qtnd", val)}
+                  value={values.qty}
+                  onChange={(val) => setFieldValue("qty", val)}
                 >
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="qtnd">Preço</FormLabel>
+                <FormLabel htmlFor="qty">Preço</FormLabel>
                 <NumberInput
                   value={values.price}
                   onChange={(val) => setFieldValue("price", val)}

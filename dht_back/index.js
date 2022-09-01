@@ -1,7 +1,15 @@
 const express = require("express");
 const mysql = require("mysql");
+const cors = require("cors")
 
 const app = express();
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  next();
+});
+app.use(express.json())
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 const database = mysql.createPool({
   host: "localhost",
@@ -26,15 +34,15 @@ app.listen(3001, () => {
   console.log("Server Started");
 });
 
-app.get("/insertProduct", (req, res) => {
-  console.log("insert called");
-  let name = req.body
-  let description = req.body
-  let quantity = req.body
-  let price = req.body
-
-  let SQL = "INSERT INTO produto (nom, quantidade, preco, descricao) VALUES (?, ?, ?, ?)"
-  database.query(SQL, [name, description, quantity, price], (err, result) => {
-    if (err) console.log(err)
+app.post("/insertProduct", (req, res) => {
+  let data = req.body
+  let SQL = "INSERT INTO produto (nome, quantidade, preco, descricao) VALUES (?, ?, ?, ?)"
+  
+  database.query(SQL, [data['title'], data['qty'], data['price'], data['description']], (err, result) => {
+    if (err) { 
+      console.log(err)
+    } else {
+      res.send(JSON.stringify({result: "SUCCESS"}))
+    }
   });
 });
