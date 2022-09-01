@@ -15,7 +15,7 @@ const database = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "password",
-  database: "dht_store"
+  database: 'dht_store'
 });
 
 database.query("CREATE TABLE IF NOT EXISTS produto(\
@@ -45,8 +45,8 @@ database.query("CREATE TABLE IF NOT EXISTS cliente(\
 
 app.listen(3001, () => {
   console.log("Server Started");
-});
-
+  });
+  
 app.post("/insertProduct", (req, res) => {
   let data = req.body
   let SQL = "INSERT INTO produto (nome, quantidade, preco, descricao) VALUES (?, ?, ?, ?)"
@@ -74,3 +74,19 @@ app.post("/insertClient", (req, res) => {
 
   
 });
+
+app.get("/getProductsList", (req, res) => {
+  let SQL = "SELECT * FROM produto";
+
+  database.query(SQL, (err, result) => {
+    if (!err) res.send(result)
+  })
+})
+
+app.get("/getClientList", (req, res) => {
+  let SQL = "SELECT * FROM cliente";
+
+  database.query(SQL, (err, result) => {
+    if (!err) res.send(result)
+  })
+})
