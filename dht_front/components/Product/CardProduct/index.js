@@ -16,7 +16,7 @@ export const CardProduct = ({ product, ...props }) => {
         </Text>
         <Text>{product.description}</Text>
         <Flex>
-          <Flex width="50%">{product.price}</Flex>
+          <Flex width="50%">{product.qty}</Flex>
           <Flex width="50%" align="end" justifyContent={"flex-end"}>
             R$ {product.price}
           </Flex>

@@ -90,6 +90,19 @@ app.post("/insertClient", (req, res) => {
   })
 })
 
+app.post("/login", (req, res) => {
+  let data = req.body;
+  let email = data["email"]
+  let senha = data["password"]
+  ModelCliente.checarCredenciais(database, email, senha, (err, result) => {
+    if (!err) {
+      res.send(JSON.stringify({ result: "SUCCESS" }));
+    } else {
+      res.send(JSON.stringify({ result: "FAILED" }));
+    }
+  });
+});
+
 app.get("/getClientList", (req, res) => {
   ModelCliente.listarClientes(database, (err, result) => {
     if (!err) { 

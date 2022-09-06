@@ -4,7 +4,7 @@ module.exports = {
   create: function(database) {
     database.query("CREATE TABLE IF NOT EXISTS cliente(\
       nome VARCHAR(100) NOT NULL,\
-      cpf VARCHAR(20) NOT NULL,\
+      cpf CHAR(14) NOT NULL,\
       email VARCHAR(100) NOT NULL,\
       dataNascimento datetime NOT NULL, \
       senha VARCHAR(150) NOT NULL,\
@@ -13,6 +13,12 @@ module.exports = {
         if(err) console.log(err)
       }
     )
+  },
+
+  checarCredenciais: function(database, email, senha, callback) {
+    let SQL = "SELECT email,senha FROM cliente WHERE email=? AND senha=?";
+  
+    database.query(SQL, [email, senha], callback);
   },
 
   inserirCliente: function(database, data, callback) {
