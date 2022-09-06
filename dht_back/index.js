@@ -1,27 +1,28 @@
-const express = require("express")
-const mysql = require("mysql")
-const cors = require("cors")
+const express = require("express");
+const mysql = require("mysql");
+const cors = require("cors");
 
-const app = express()
+const app = express();
 
 // WSL iniciar mysql: sudo /etc/init.d/mysql start
 // mysql -u root -p
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
-  next()
-})
-app.use(express.json())
-app.use(cors({ origin: 'http://localhost:3000' }))
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  next();
+});
+app.use(express.json());
+app.use(cors({ origin: "http://localhost:3000" }));
 
 const database = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "password",
-  database: 'dht_store'
-})
+  database: "dht_store",
+});
 
-database.query("CREATE TABLE IF NOT EXISTS produto(\
+database.query(
+  "CREATE TABLE IF NOT EXISTS produto(\
   id INT AUTO_INCREMENT NOT NULL,\
   nome VARCHAR(30) NOT NULL,\
   quantidade INT NOT NULL,\
@@ -29,11 +30,12 @@ database.query("CREATE TABLE IF NOT EXISTS produto(\
   descricao TEXT,\
   CONSTRAINT produto_pk PRIMARY KEY(id))",
   (err, result) => {
-    if(err) console.log(err)
+    if (err) console.log(err);
   }
-)
+);
 
-database.query("CREATE TABLE IF NOT EXISTS cliente(\
+database.query(
+  "CREATE TABLE IF NOT EXISTS cliente(\
   id INT AUTO_INCREMENT NOT NULL,\
   nome VARCHAR(100) NOT NULL,\
   cpf VARCHAR(20) NOT NULL,\
@@ -42,89 +44,130 @@ database.query("CREATE TABLE IF NOT EXISTS cliente(\
   senha VARCHAR(150) NOT NULL,\
   CONSTRAINT cliente_pk PRIMARY KEY(id))",
   (err, result) => {
-    if(err) console.log(err)
+    if (err) console.log(err);
   }
-)
+);
 
 app.listen(3001, () => {
-  console.log("Server Started")
-})
+  console.log("Server Started");
+});
 
 app.get("/getProductsList", (req, res) => {
-  let SQL = "SELECT * FROM produto"
+  let SQL = "SELECT * FROM produto";
 
   database.query(SQL, (err, result) => {
-    if (!err) { 
-      res.send(result) 
+    if (!err) {
+      res.send(result);
     } else {
-      res.send(JSON.stringify({result: "FAILED"}))
+      res.send(JSON.stringify({ result: "FAILED" }));
     }
-  })
-})
+  });
+});
 
 app.post("/deleteProduct", (req, res) => {
-  let productId = req.body['id']
-  let SQL = "DELETE FROM produto WHERE id=?"
+  let productId = req.body["id"];
+  let SQL = "DELETE FROM produto WHERE id=?";
   database.query(SQL, [productId], (err, result) => {
-    if (err) { 
-      console.log(err)
-      res.send(JSON.stringify({result: "FAILED"}))
+    if (err) {
+      console.log(err);
+      res.send(JSON.stringify({ result: "FAILED" }));
     } else {
-      res.send(JSON.stringify({result: "SUCCESS"}))
+      res.send(JSON.stringify({ result: "SUCCESS" }));
     }
-  })
-})
+  });
+});
 
 app.post("/editProduct", (req, res) => {
-  let data = req.body
-  let SQL = "UPDATE produto SET nome=?, quantidade=?, preco=?, descricao=? WHERE id=?"
+  let data = req.body;
+  let SQL =
+    "UPDATE produto SET nome=?, quantidade=?, preco=?, descricao=? WHERE id=?";
 
-  database.query(SQL, [data['title'], data['qty'], data['price'], data['description'], data["id"]],(err, result) => {
-    if (err) { 
-      console.log(err)
-      res.send(JSON.stringify({result: "FAILED"}))
-    } else {
-      res.send(JSON.stringify({result: "SUCCESS"}))
+  database.query(
+    SQL,
+    [
+      data["title"],
+      data["qty"],
+      data["price"],
+      data["description"],
+      data["id"],
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ result: "FAILED" }));
+      } else {
+        res.send(JSON.stringify({ result: "SUCCESS" }));
+      }
     }
-  })
-})
+  );
+});
 
 app.post("/insertProduct", (req, res) => {
-  let data = req.body
-  let SQL = "INSERT INTO produto (nome, quantidade, preco, descricao) VALUES (?, ?, ?, ?)"
-  
-  database.query(SQL, [data['title'], data['qty'], data['price'], data['description']], (err, result) => {
-    if (err) { 
-      console.log(err)
-      res.send(JSON.stringify({result: "FAILED"}))
-    } else {
-      res.send(JSON.stringify({result: "SUCCESS"}))
+  let data = req.body;
+  let SQL =
+    "INSERT INTO produto (nome, quantidade, preco, descricao) VALUES (?, ?, ?, ?)";
+
+  database.query(
+    SQL,
+    [data["title"], data["qty"], data["price"], data["description"]],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ result: "FAILED" }));
+      } else {
+        res.send(JSON.stringify({ result: "SUCCESS" }));
+      }
     }
-  })
-})
+  );
+});
 
 app.post("/insertClient", (req, res) => {
-  let data = req.body
-  let SQL = "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha) VALUES (?, ?, ?, ?, ?)"
-  
-  database.query(SQL, [data['name'], data['cpf'], data['email'], data['birthDate'], data['password']], (err, result) => {
-    if (err) { 
-      console.log(err)
-      res.send(JSON.stringify({result: "FAILED"}))
-    } else {
-      res.send(JSON.stringify({result: "SUCCESS"}))
+  let data = req.body;
+  let SQL =
+    "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha) VALUES (?, ?, ?, ?, ?)";
+
+  database.query(
+    SQL,
+    [
+      data["name"],
+      data["cpf"],
+      data["email"],
+      data["birthDate"],
+      data["password"],
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ result: "FAILED" }));
+      } else {
+        res.send(JSON.stringify({ result: "SUCCESS" }));
+      }
     }
-  })
-})
+  );
+});
+
+app.post("/login", (req, res) => {
+  let data = req.body;
+  let SQL = "SELECT email,senha FROM cliente WHERE email=? AND senha=?";
+
+  database.query(SQL, [data["email"], data["password"]], (err, result) => {
+    if (!err) {
+      res.send(JSON.stringify({ result: "SUCCESS" }));
+    } else {
+      res.send(JSON.stringify({ result: "FAILED" }));
+    }
+  });
+});
 
 app.get("/getClientList", (req, res) => {
-  let SQL = "SELECT * FROM cliente"
+  let SQL = "SELECT * FROM cliente";
 
   database.query(SQL, (err, result) => {
-    if (!err) { 
-      res.send(result) 
+    if (!err) {
+      res.send(result);
     } else {
-      res.send(JSON.stringify({result: "FAILED"}))
+      res.send(JSON.stringify({ result: "FAILED" }));
     }
-  })
-})
+  });
+});
+
