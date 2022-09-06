@@ -3,13 +3,30 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { AppBar } from "../components/AppBar";
 import { CardProduct } from "../components/Product/CardProduct";
-import products from "../products.json";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isAdmin, setAdmin] = useState(true);
   const [product, setProduct] = useState(null);
   const [current, setCurrent] = useState("list");
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const getProductsList = async () => {
+      const response = await fetch("http://localhost:3001/getProductsList", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      setProducts(result);
+    };
+
+    getProductsList().catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) setCurrent("list");
@@ -33,13 +50,13 @@ export default function Home() {
         ></AppBar>
         <Center>
           <Flex width="70%" mt={"2rem"} flexWrap="wrap">
-            {products.data.map((product) => {
+            {products.map((product) => {
               const productObject = {
                 id: product.id,
-                title: product.title,
-                description: product.description,
-                price: product.price,
-                qty: product.qty,
+                title: product.nome,
+                description: product.descricao,
+                price: product.preco,
+                qty: product.quantidade,
               };
               return (
                 <CardProduct

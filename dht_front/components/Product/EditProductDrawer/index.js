@@ -11,7 +11,22 @@ import {
 } from "@chakra-ui/react";
 
 export const EditProductDrawer = ({ product, ...props }) => {
-  console.log(product);
+  const deleteProduct = async () => {
+    const rawResponse = await fetch("http://localhost:3001/deleteProduct", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: product.id }),
+    });
+    const content = await rawResponse.json();
+    if (content["result"] != "SUCCESS") {
+      alert("Algo deu errado, produto não excluido");
+    }
+    window.location.reload();
+  };
+
   return (
     <>
       <Formik
@@ -21,8 +36,20 @@ export const EditProductDrawer = ({ product, ...props }) => {
           qty: product.qty,
           price: product.price,
         }}
-        onSubmit={(values) => {
-          alert(JSON.stringify(values, null, 2));
+        onSubmit={async (values) => {
+          const rawResponse = await fetch("http://localhost:3001/editProduct", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: product.id, ...values }),
+          });
+          const content = await rawResponse.json();
+          if (content["result"] != "SUCCESS") {
+            alert("Algo deu errado, produto não Editado");
+          }
+          window.location.reload();
         }}
       >
         {({ handleSubmit, values, setFieldValue }) => (
@@ -70,7 +97,12 @@ export const EditProductDrawer = ({ product, ...props }) => {
                 Salvar
               </Button>
 
-              <Button type="submit" colorScheme="red" width="full">
+              <Button
+                type="submit"
+                colorScheme="red"
+                width="full"
+                onClick={deleteProduct}
+              >
                 Apagar produto
               </Button>
             </VStack>
