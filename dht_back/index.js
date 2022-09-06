@@ -1,6 +1,8 @@
 const express = require("express")
 const mysql = require("mysql")
 const cors = require("cors")
+const ModelProduto = require("./model/ModelProduto")
+const ModelCliente = require("./model/ModelCliente")
 
 const app = express()
 
@@ -21,39 +23,15 @@ const database = mysql.createPool({
   database: 'dht_store'
 })
 
-database.query("CREATE TABLE IF NOT EXISTS produto(\
-  id INT AUTO_INCREMENT NOT NULL,\
-  nome VARCHAR(30) NOT NULL,\
-  quantidade INT NOT NULL,\
-  preco DOUBLE NOT NULL,\
-  descricao TEXT,\
-  CONSTRAINT produto_pk PRIMARY KEY(id))",
-  (err, result) => {
-    if(err) console.log(err)
-  }
-)
-
-database.query("CREATE TABLE IF NOT EXISTS cliente(\
-  id INT AUTO_INCREMENT NOT NULL,\
-  nome VARCHAR(100) NOT NULL,\
-  cpf VARCHAR(20) NOT NULL,\
-  email VARCHAR(100) NOT NULL,\
-  dataNascimento datetime NOT NULL, \
-  senha VARCHAR(150) NOT NULL,\
-  CONSTRAINT cliente_pk PRIMARY KEY(id))",
-  (err, result) => {
-    if(err) console.log(err)
-  }
-)
+ModelProduto.create(database)
+ModelCliente.create(database)
 
 app.listen(3001, () => {
   console.log("Server Started")
 })
 
 app.get("/getProductsList", (req, res) => {
-  let SQL = "SELECT * FROM produto"
-
-  database.query(SQL, (err, result) => {
+  ModelProduto.listarProdutos(database, (err, result) => {
     if (!err) { 
       res.send(result) 
     } else {
@@ -64,8 +42,7 @@ app.get("/getProductsList", (req, res) => {
 
 app.post("/deleteProduct", (req, res) => {
   let productId = req.body['id']
-  let SQL = "DELETE FROM produto WHERE id=?"
-  database.query(SQL, [productId], (err, result) => {
+  ModelProduto.deletarProduto(database, productId, (err, result) => {
     if (err) { 
       console.log(err)
       res.send(JSON.stringify({result: "FAILED"}))
@@ -77,9 +54,7 @@ app.post("/deleteProduct", (req, res) => {
 
 app.post("/editProduct", (req, res) => {
   let data = req.body
-  let SQL = "UPDATE produto SET nome=?, quantidade=?, preco=?, descricao=? WHERE id=?"
-
-  database.query(SQL, [data['title'], data['qty'], data['price'], data['description'], data["id"]],(err, result) => {
+  ModelProduto.editarProduto(database, data, (err, result) => {
     if (err) { 
       console.log(err)
       res.send(JSON.stringify({result: "FAILED"}))
@@ -91,23 +66,21 @@ app.post("/editProduct", (req, res) => {
 
 app.post("/insertProduct", (req, res) => {
   let data = req.body
-  let SQL = "INSERT INTO produto (nome, quantidade, preco, descricao) VALUES (?, ?, ?, ?)"
-  
-  database.query(SQL, [data['title'], data['qty'], data['price'], data['description']], (err, result) => {
-    if (err) { 
-      console.log(err)
-      res.send(JSON.stringify({result: "FAILED"}))
-    } else {
-      res.send(JSON.stringify({result: "SUCCESS"}))
-    }
-  })
+  if (data) {
+    ModelProduto.inserirProduto(database, data, (err, result) => {
+      if (err) { 
+        console.log(err)
+        res.send(JSON.stringify({result: "FAILED"}))
+      } else {
+        res.send(JSON.stringify({result: "SUCCESS"}))
+      }
+    });
+  }
 })
 
 app.post("/insertClient", (req, res) => {
   let data = req.body
-  let SQL = "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha) VALUES (?, ?, ?, ?, ?)"
-  
-  database.query(SQL, [data['name'], data['cpf'], data['email'], data['birthDate'], data['password']], (err, result) => {
+  ModelCliente.inserirCliente(database, data, (err, result) => {
     if (err) { 
       console.log(err)
       res.send(JSON.stringify({result: "FAILED"}))
@@ -118,9 +91,7 @@ app.post("/insertClient", (req, res) => {
 })
 
 app.get("/getClientList", (req, res) => {
-  let SQL = "SELECT * FROM cliente"
-
-  database.query(SQL, (err, result) => {
+  ModelCliente.listarClientes(database, (err, result) => {
     if (!err) { 
       res.send(result) 
     } else {
