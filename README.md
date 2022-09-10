@@ -46,5 +46,5 @@ DHT_Store é uma loja online de variedades onde o cliente pode ser cadastrar e f
 
 ### Prototipo
 
-[Clique para acessar o Figma](https://figma.com)
+[Clique para acessar o Figma](https://www.figma.com/file/e5TI9B7fPJPD1kfnQbiCpa/DHT?node-id=0%3A1)
 
