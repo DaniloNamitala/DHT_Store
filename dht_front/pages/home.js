@@ -1,15 +1,28 @@
 import { Center, Flex, useDisclosure } from "@chakra-ui/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AppBar } from "../components/AppBar";
 import { CardProduct } from "../components/Product/CardProduct";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isAdmin, setAdmin] = useState(true);
+  const [isAdmin, setAdmin] = useState(null);
   const [product, setProduct] = useState(null);
   const [current, setCurrent] = useState("list");
   const [products, setProducts] = useState([]);
+
+  const router = useRouter();
+  const { user, admin } = router.query;
+
+  useEffect(() => {
+    if (user !== undefined && !user)
+      window.location.href = "http://localhost:3000";
+
+    if (isAdmin !== Boolean(+admin)) setAdmin(Boolean(+admin));
+
+    if (!isOpen) setCurrent("list");
+  }, [user, admin, isOpen]);
 
   useEffect(() => {
     const getProductsList = async () => {
@@ -27,10 +40,6 @@ export default function Home() {
 
     getProductsList().catch(console.error);
   }, []);
-
-  useEffect(() => {
-    if (!isOpen) setCurrent("list");
-  }, [isOpen]);
 
   return (
     <>

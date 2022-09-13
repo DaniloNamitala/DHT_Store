@@ -43,7 +43,7 @@ export default function Login() {
             if (content["result"] == "FAILED") {
               alert("Algo deu errado, credenciais erradas");
             } else {
-              window.location = `http://localhost:3000/home?user=${content.user.cpf}&isAdmin=${content.user.admin}`;
+              window.location = `http://localhost:3000/home?user=${content.user.cpf}&admin=${content.user.admin}`;
             }
           }}
         >

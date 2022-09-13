@@ -61,7 +61,9 @@ export const AppBar = ({
 
           <DrawerBody>{drawer[current]}</DrawerBody>
 
-          <DrawerFooter></DrawerFooter>
+          <DrawerFooter>
+            <Link href="/">Deslogar</Link>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
       {children}
