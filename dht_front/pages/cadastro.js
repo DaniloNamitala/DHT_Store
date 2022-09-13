@@ -45,9 +45,9 @@ export default function Cadastro() {
             );
             const content = await rawResponse.json();
             if (content["result"] != "SUCCESS") {
-              alert("Algo deu errado, produto não adicionado");
+              alert("Algo deu errado, cliente não castrado");
             }
-            window.location = "http://localhost:3000/login";
+            window.location = "http://localhost:3000/";
           }}
         >
           {({ handleSubmit }) => (

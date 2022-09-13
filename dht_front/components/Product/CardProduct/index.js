@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { baseColor } from "../../../styles/style";
 
-export const CardProduct = ({ product, ...props }) => {
+export const CardProduct = ({ product, onlyDisplay, ...props }) => {
   return (
     <Box
       bg={baseColor}
@@ -22,9 +22,19 @@ export const CardProduct = ({ product, ...props }) => {
           </Flex>
         </Flex>
       </Box>
-      <Flex justifyContent={"center"} cursor="pointer">
-        Adicionar ao carrinho
-      </Flex>
+      {onlyDisplay ? null : (
+        <Flex
+          justifyContent={"center"}
+          cursor="pointer"
+          onClick={() => {
+            props.setProduct(product);
+            props.setCurrent("createPurchase");
+            props.onOpen();
+          }}
+        >
+          Comprar produto
+        </Flex>
+      )}
       {props.isAdmin ? (
         <Flex
           justifyContent={"center"}
