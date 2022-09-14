@@ -17,6 +17,8 @@ import {
 import { baseColor } from "../../styles/style";
 import { CreateProductDrawer } from "../Product/CreateProductDrawer";
 import { EditProductDrawer } from "../Product/EditProductDrawer";
+import { CreatePurchaseDrawer } from "../Purchase/CreatePurchaseDrawer";
+import { EditPurchaseDrawer } from "../Purchase/EditPurchaseDrawer";
 
 export const AppBar = ({
   children,
@@ -37,6 +39,8 @@ export const AppBar = ({
   );
 
   const drawer = {
+    createPurchase: <CreatePurchaseDrawer {...props} />,
+    editPurchase: <EditPurchaseDrawer {...props} />,
     create: <CreateProductDrawer {...props} />,
     edit: <EditProductDrawer {...props} />,
     list: ListItens(),
@@ -49,7 +53,7 @@ export const AppBar = ({
           Menu
         </Button>
       </Flex>
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent bgColor={baseColor}>
           <DrawerCloseButton />
@@ -57,7 +61,9 @@ export const AppBar = ({
 
           <DrawerBody>{drawer[current]}</DrawerBody>
 
-          <DrawerFooter></DrawerFooter>
+          <DrawerFooter>
+            <Link href="/">Deslogar</Link>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
       {children}
