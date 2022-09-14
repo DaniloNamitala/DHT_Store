@@ -30,12 +30,16 @@ module.exports = {
 
     clienteDAO.checarCredenciais(data["email"], async (err, result) => {
       let encrypt_res = result.length > 0
-      if (encrypt_res){
-        encrypt_res = await bcrypt.compare(data["password"], result[0].senhacl)
-      }
+      if (encrypt_res)
+        encrypt_res = await bcrypt.compare(data["password"], result[0].senha)
+      
       
       if (encrypt_res) {
-        res.send(JSON.stringify({ result: "SUCCESS" }))
+        res.send(JSON.stringify(
+          { result: "SUCCESS",
+            user: result[0]
+          }
+        ))
       } else {
         res.send(JSON.stringify({ result: "FAILED" }))
       }

@@ -10,9 +10,10 @@ const database = mysql.createConnection ({
 database.query("CREATE TABLE IF NOT EXISTS cliente(\
   nome VARCHAR(100) NOT NULL,\
   cpf CHAR(14) NOT NULL,\
-  email VARCHAR(100) NOT NULL,\
+  email VARCHAR(100) NOT NULL UNIQUE,\
   dataNascimento datetime NOT NULL, \
   senha VARCHAR(150) NOT NULL,\
+  admin TINYINT,\
   CONSTRAINT cliente_pk PRIMARY KEY(cpf))",
   (err, result) => {
     if(err) console.log(err)
@@ -21,14 +22,15 @@ database.query("CREATE TABLE IF NOT EXISTS cliente(\
 
 module.exports = {
   
-  checarCredenciais: function(email, callback) {
-    let SQL = "SELECT senha FROM cliente WHERE email=?";
+  checarCredenciais: async function(email, callback) {
+    let SQL = "SELECT * FROM cliente WHERE email=?";
     database.query(SQL, [email], callback);
   },
 
   inserirCliente: async function(data, callback) {
-    let SQL = "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha) VALUES (?, ?, ?, ?, ?)"
-    database.query(SQL, [data['name'], data['cpf'], data['email'], data['birthDate'], data['password']], callback)
+    let SQL = "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha, admin) VALUES (?, ?, ?, ?, ?, ?)"
+    console.log(data)
+    database.query(SQL, [data['name'], data['cpf'], data['email'], data['birthDate'], data['password'], data["admin"]], callback)
   },
 
   editarCliente: function(data, callback) {
@@ -41,8 +43,8 @@ module.exports = {
     database.query(SQL, callback)
   },
 
-  deletarCliente: function(id, callback) {
-    let SQL = "DELETE FROM cliente WHERE id=?"
-    database.query(SQL, [id], callback)
+  deletarCliente: function(cpf, callback) {
+    let SQL = "DELETE FROM cliente WHERE cpf=?"
+    database.query(SQL, [cpf], callback)
   }
 }

@@ -38,6 +38,18 @@ module.exports = {
     database.query(SQL, callback)
   },
 
+  buscarProduto: function(id) {
+    let SQL = "SELECT * FROM produto WHERE id=?"
+    return new Promise((resolve, reject) => {
+      database.query(SQL, [id], (err, result) => {
+        if (result)
+          return resolve(result)
+        else
+          return reject(err)
+      })
+    })
+  },
+
   deletarProduto: function(id, callback) {
     let SQL = "DELETE FROM produto WHERE id=?"
     database.query(SQL, [id], callback)
