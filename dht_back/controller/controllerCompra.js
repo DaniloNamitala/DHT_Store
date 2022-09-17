@@ -21,7 +21,7 @@ module.exports = {
 
   },
 
-  deletarComra: (req, res) => {
+  deletarCompra: (req, res) => {
 
   }
 }
