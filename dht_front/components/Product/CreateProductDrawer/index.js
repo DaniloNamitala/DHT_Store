@@ -11,6 +11,8 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 
+import headers from "../../../utils/headers";
+
 export const CreateProductDrawer = ({ setCurrent }) => {
   return (
     <>
@@ -26,10 +28,7 @@ export const CreateProductDrawer = ({ setCurrent }) => {
             "http://localhost:3001/insertProduct",
             {
               method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
+              headers,
               body: JSON.stringify(values),
             }
           );

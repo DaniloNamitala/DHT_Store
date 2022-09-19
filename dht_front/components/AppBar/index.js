@@ -26,24 +26,52 @@ export const AppBar = ({
   isOpen,
   onClose,
   onOpen,
+  isAdmin,
   ...props
 }) => {
-  const ListItens = () => (
+  const listMenu = () => (
     <List>
+      {isAdmin ? (
+        <ListItem>
+          <Link onClick={() => props.setCurrent("create")}>
+            Adicionar produto
+          </Link>
+        </ListItem>
+      ) : null}
       <ListItem>
-        <Link onClick={() => props.setCurrent("create")}>
-          Adicionar produto
+        <Link
+          onClick={() => {
+            props.setList("listProducts");
+            onClose();
+          }}
+        >
+          Listar produtos
+        </Link>
+      </ListItem>
+      <ListItem>
+        <Link
+          onClick={() => {
+            props.setList("listPurchases");
+            onClose();
+          }}
+        >
+          Listar compras
         </Link>
       </ListItem>
     </List>
   );
 
   const drawer = {
-    createPurchase: <CreatePurchaseDrawer {...props} />,
-    editPurchase: <EditPurchaseDrawer {...props} />,
+    createPurchase: <CreatePurchaseDrawer product={props.product} {...props} />,
+    editPurchase: (
+      <EditPurchaseDrawer
+        product={props.product}
+        isAdmin={isAdmin}
+        {...props}
+      />
+    ),
     create: <CreateProductDrawer {...props} />,
     edit: <EditProductDrawer {...props} />,
-    list: ListItens(),
   };
 
   return (
@@ -53,14 +81,23 @@ export const AppBar = ({
           Menu
         </Button>
       </Flex>
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
+      <Drawer
+        isOpen={isOpen}
+        placement="left"
+        onClose={() => {
+          props.setCurrent("menu");
+          onClose();
+        }}
+        size="md"
+      >
         <DrawerOverlay />
         <DrawerContent bgColor={baseColor}>
           <DrawerCloseButton />
           <DrawerHeader>DHT</DrawerHeader>
 
-          <DrawerBody>{drawer[current]}</DrawerBody>
-
+          <DrawerBody>
+            {drawer[current] ? drawer[current] : listMenu()}
+          </DrawerBody>
           <DrawerFooter>
             <Link href="/">Deslogar</Link>
           </DrawerFooter>

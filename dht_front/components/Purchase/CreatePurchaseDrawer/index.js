@@ -10,28 +10,38 @@ import {
   NumberInput,
   NumberInputField,
 } from "@chakra-ui/react";
-import { CardProduct } from "../../Product/CardProduct";
+import { CardPurchase } from "../../Purchase/CardPurchase";
+import { useRouter } from "next/router";
+import headers from "../../../utils/headers";
 
 export const CreatePurchaseDrawer = ({ setCurrent, product }) => {
+  const router = useRouter();
+  const { user } = router.query;
   return (
     <>
       <Formik
         initialValues={{
-          title: "",
-          description: "",
-          qty: 0,
-          price: 0,
+          price: product.price,
+          endereco: "",
+          CEP: "",
+          cidade: "",
+          cpf: user,
         }}
         onSubmit={async (values) => {
+          console.log("submit");
           const rawResponse = await fetch(
-            "http://localhost:3001/insertProduct",
+            "http://localhost:3001/cadastrarCompra",
             {
               method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(values),
+              headers,
+              body: JSON.stringify({
+                idProduto: product.id,
+                cpfCliente: values.cpf,
+                quantidade: 1,
+                endereco: values.endereco,
+                cep: values.CEP,
+                cidade: values.city,
+              }),
             }
           );
           const content = await rawResponse.json();
@@ -44,55 +54,57 @@ export const CreatePurchaseDrawer = ({ setCurrent, product }) => {
         {({ handleSubmit, values, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <VStack spacing={4} align="flex-start">
-              <CardProduct
+              <CardPurchase
                 isAdmin={false}
                 onlyDisplay={true}
                 key={product.id}
                 id={product.id}
                 product={{
                   id: product.id,
-                  title: product.nome,
-                  description: product.descricao,
-                  price: product.preco,
-                  qty: product.quantidade,
+                  title: product.title,
+                  description: product.description,
+                  price: product.price,
+                  qty: product.qtdy,
+                  cpf: user,
                 }}
               />
               <FormControl>
-                <FormLabel htmlFor="title">Nome</FormLabel>
+                <FormLabel htmlFor="endereco">Endereço</FormLabel>
                 <Field
                   as={Input}
-                  id="title"
-                  name="title"
+                  id="endereco"
+                  name="endereco"
                   variant="filled"
                   required
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="description">Descrição</FormLabel>
-                <Field
-                  as={Textarea}
-                  id="description"
-                  name="description"
-                  variant="filled"
-                />
+                <FormLabel htmlFor="CEP">CEP</FormLabel>
+                <Field as={Input} id="CEP" name="CEP" variant="filled" />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="qty">Quantidade</FormLabel>
-                <NumberInput
-                  value={values.qty}
-                  onChange={(val) => setFieldValue("qty", val)}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <FormLabel htmlFor="city">Cidade</FormLabel>
+                <Field as={Input} id="city" name="city" variant="filled" />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="price">Preço</FormLabel>
+                <FormLabel htmlFor="price">Pagamento</FormLabel>
                 <NumberInput
+                  disabled
                   value={values.price}
                   onChange={(val) => setFieldValue("price", val)}
                 >
                   <NumberInputField />
                 </NumberInput>
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="cpf">CPF do cliente</FormLabel>
+                <Field
+                  as={Input}
+                  disabled
+                  id="cpf"
+                  name="cpf"
+                  variant="filled"
+                />
               </FormControl>
 
               <Button type="submit" colorScheme="gray" width="full">

@@ -11,26 +11,55 @@ import {
   NumberInputField,
 } from "@chakra-ui/react";
 
-export const EditPurchaseDrawer = ({ setCurrent }) => {
+import headers from "../../../utils/headers";
+import { useRouter } from "next/router";
+import { CardPurchase } from "../CardPurchase";
+
+export const EditPurchaseDrawer = ({ setCurrent, product, isAdmin }) => {
+  const router = useRouter();
+  const { user } = router.query;
+
+  const deletePurchase = async () => {
+    const rawResponse = await fetch("http://localhost:3001/deletarCompra", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ id: product.id }),
+    });
+    console.log(rawResponse);
+    const content = await rawResponse.json();
+    if (content["result"] != "SUCCESS") {
+      alert("Algo deu errado, compra não excluida");
+    }
+    // window.location.reload();
+  };
+
   return (
     <>
       <Formik
         initialValues={{
-          title: "",
-          description: "",
-          qty: 0,
-          price: 0,
+          price: product.price,
+          endereco: product.endereco,
+          CEP: product.cep,
+          city: product.cidade,
+          cpf: user,
         }}
         onSubmit={async (values) => {
+          console.log("submit");
           const rawResponse = await fetch(
-            "http://localhost:3001/insertProduct",
+            "http://localhost:3001/editarCompra",
             {
               method: "POST",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(values),
+              headers,
+              body: JSON.stringify({
+                id: product.id,
+                idProduto: product.title,
+                cpfCliente: values.cpf,
+                quantidade: 1,
+                endereco: values.endereco,
+                cep: values.CEP,
+                cidade: values.city,
+                preco: values.price,
+              }),
             }
           );
           const content = await rawResponse.json();
@@ -43,46 +72,61 @@ export const EditPurchaseDrawer = ({ setCurrent }) => {
         {({ handleSubmit, values, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <VStack spacing={4} align="flex-start">
+              <CardPurchase
+                isAdmin={false}
+                onlyDisplay={true}
+                key={product.id}
+                id={product.id}
+                product={{
+                  title: product.title,
+                  id: product.id,
+                  endereco: product.endereco,
+                  cep: product.cep,
+                  price: product.price,
+                  cpfCliente: product.cpfCliente,
+                }}
+              />
               <FormControl>
-                <FormLabel htmlFor="title">Nome</FormLabel>
+                <FormLabel htmlFor="endereco">Endereço</FormLabel>
                 <Field
                   as={Input}
-                  id="title"
-                  name="title"
+                  id="endereco"
+                  name="endereco"
                   variant="filled"
                   required
                 />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="description">Descrição</FormLabel>
-                <Field
-                  as={Textarea}
-                  id="description"
-                  name="description"
-                  variant="filled"
-                />
+                <FormLabel htmlFor="CEP">CEP</FormLabel>
+                <Field as={Input} id="CEP" name="CEP" variant="filled" />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="qty">Quantidade</FormLabel>
-                <NumberInput
-                  value={values.qty}
-                  onChange={(val) => setFieldValue("qty", val)}
-                >
-                  <NumberInputField />
-                </NumberInput>
+                <FormLabel htmlFor="city">Cidade</FormLabel>
+                <Field as={Input} id="city" name="city" variant="filled" />
               </FormControl>
               <FormControl>
-                <FormLabel htmlFor="price">Preço</FormLabel>
+                <FormLabel htmlFor="price">Pagamento</FormLabel>
                 <NumberInput
+                  disabled
                   value={values.price}
                   onChange={(val) => setFieldValue("price", val)}
                 >
                   <NumberInputField />
                 </NumberInput>
               </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="cpf">CPF do cliente</FormLabel>
+                <Field
+                  as={Input}
+                  disabled
+                  id="cpf"
+                  name="cpf"
+                  variant="filled"
+                />
+              </FormControl>
 
               <Button type="submit" colorScheme="gray" width="full">
-                Cadastrar
+                Editar
               </Button>
               <Button
                 type="button"
@@ -92,6 +136,17 @@ export const EditPurchaseDrawer = ({ setCurrent }) => {
               >
                 Cancelar
               </Button>
+
+              {isAdmin ? (
+                <Button
+                  type="submit"
+                  colorScheme="red"
+                  width="full"
+                  onClick={deletePurchase}
+                >
+                  Apagar compra
+                </Button>
+              ) : null}
             </VStack>
           </form>
         )}

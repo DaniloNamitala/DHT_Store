@@ -4,13 +4,16 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AppBar } from "../components/AppBar";
 import { CardProduct } from "../components/Product/CardProduct";
+import { CardPurchase } from "../components/Purchase/CardPurchase";
+import headers from "../utils/headers";
 
 export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isAdmin, setAdmin] = useState(null);
   const [product, setProduct] = useState(null);
-  const [current, setCurrent] = useState("list");
-  const [products, setProducts] = useState([]);
+  const [current, setCurrent] = useState("menu");
+  const [typeList, setList] = useState("listProducts");
+  const [list, setListt] = useState([]);
 
   const router = useRouter();
   const { user, admin } = router.query;
@@ -21,25 +24,82 @@ export default function Home() {
 
     if (isAdmin !== Boolean(+admin)) setAdmin(Boolean(+admin));
 
-    if (!isOpen) setCurrent("list");
+    if (!isOpen) setCurrent("menu");
   }, [user, admin, isOpen]);
 
   useEffect(() => {
-    const getProductsList = async () => {
-      const response = await fetch("http://localhost:3001/getProductsList", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+    if (typeList === "listPurchases") {
+      const getPurchasesList = async () => {
+        const response = await fetch("http://localhost:3001/listarCompra", {
+          method: "POST",
+          headers,
+        });
 
-      const result = await response.json();
-      setProducts(result);
-    };
+        const result = await response.json();
+        setListt(result);
+      };
 
-    getProductsList().catch(console.error);
-  }, []);
+      getPurchasesList().catch(console.error);
+    } else {
+      const getProductsList = async () => {
+        const response = await fetch("http://localhost:3001/getProductsList", {
+          method: "GET",
+          headers,
+        });
+
+        const result = await response.json();
+        setListt(result);
+      };
+
+      getProductsList().catch(console.error);
+    }
+  }, [typeList]);
+
+  const listCardsProduct = () =>
+    list.map((product) => {
+      const productObject = {
+        id: product.id,
+        title: product.nome,
+        description: product.descricao,
+        price: product.preco,
+        qty: product.quantidade,
+      };
+      return (
+        <CardProduct
+          isAdmin={isAdmin}
+          key={product.id}
+          id={product.id}
+          product={productObject}
+          setCurrent={setCurrent}
+          setProduct={setProduct}
+          onOpen={onOpen}
+        />
+      );
+    });
+
+  const listCardsPurchase = () =>
+    list.map((purchase) => {
+      const purchaseObject = {
+        id: purchase.id,
+        title: purchase.idProduto,
+        cpfCliente: purchase.cpfCliente,
+        endereco: purchase.endereco,
+        cep: purchase.cep,
+        cidade: purchase.cidade,
+        price: purchase.precoProduto,
+      };
+      return (
+        <CardPurchase
+          isAdmin={isAdmin}
+          key={purchase.id}
+          id={purchase.id}
+          product={purchaseObject}
+          setCurrent={setCurrent}
+          setProduct={setProduct}
+          onOpen={onOpen}
+        />
+      );
+    });
 
   return (
     <>
@@ -56,29 +116,14 @@ export default function Home() {
           onClose={onClose}
           onOpen={onOpen}
           setCurrent={setCurrent}
+          setList={setList}
+          isAdmin={isAdmin}
         ></AppBar>
         <Center>
           <Flex width="70%" mt={"2rem"} flexWrap="wrap">
-            {products.map((product) => {
-              const productObject = {
-                id: product.id,
-                title: product.nome,
-                description: product.descricao,
-                price: product.preco,
-                qty: product.quantidade,
-              };
-              return (
-                <CardProduct
-                  isAdmin={isAdmin}
-                  key={product.id}
-                  id={product.id}
-                  product={productObject}
-                  setCurrent={setCurrent}
-                  setProduct={setProduct}
-                  onOpen={onOpen}
-                />
-              );
-            })}
+            {typeList === "listProducts"
+              ? listCardsProduct()
+              : listCardsPurchase()}
           </Flex>
         </Center>
       </Flex>
