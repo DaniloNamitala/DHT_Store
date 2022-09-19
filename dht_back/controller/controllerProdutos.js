@@ -1,10 +1,10 @@
-const ModelProduto = require("../model/produtoDAO")
+const produtoDAO = require("../model/produtoDAO")
 
 module.exports = {
   insert: (req, res) => {
     let data = req.body
     if (data) {
-      ModelProduto.inserirProduto(data, (err, result) => {
+      produtoDAO.inserirProduto(data, (err, result) => {
         if (err) { 
           console.log(err)
           res.send(JSON.stringify({result: "FAILED"}))
@@ -17,7 +17,7 @@ module.exports = {
 
   edit: (req, res) => {
     let data = req.body
-    ModelProduto.editarProduto(data, (err, result) => {
+    produtoDAO.editarProduto(data, (err, result) => {
       if (err) { 
         console.log(err)
         res.send(JSON.stringify({result: "FAILED"}))
@@ -28,7 +28,7 @@ module.exports = {
   },
 
   get: (req, res) => {
-    ModelProduto.listarProdutos((err, result) => {
+    produtoDAO.listarProdutos((err, result) => {
       if (!err) { 
         res.send(result) 
       } else {
@@ -39,7 +39,7 @@ module.exports = {
 
   delete: (req, res) => {
     let productId = req.body['id']
-    ModelProduto.deletarProduto(productId, (err, result) => {
+    produtoDAO.deletarProduto(productId, (err, result) => {
       if (err) { 
         console.log(err)
         res.send(JSON.stringify({result: "FAILED"}))

@@ -5,6 +5,7 @@ const app = express();
 
 const routerProduto = require("./router/routerProdutos")
 const routerCliente = require("./router/routerCliente")
+const routerCompras = require("./router/routerCompra")
 // WSL iniciar mysql: sudo /etc/init.d/mysql start
 // mysql -u root -p
 
@@ -17,6 +18,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use(routerProduto)
 app.use(routerCliente)
+app.use(routerCompras)
 
 
 app.listen(3001, () => {

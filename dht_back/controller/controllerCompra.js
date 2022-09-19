@@ -2,7 +2,7 @@ const compraDAO = require("../model/compraDAO")
 const comprasDAO = require("../model/compraDAO")
 
 module.exports = {
-  cadastrarCompra: (req, res) => {
+  insert: (req, res) => {
     let data = req.body
     comprasDAO.inserirCompra(data, (err, result)=> {
       if (!err) {
@@ -13,15 +13,36 @@ module.exports = {
     })
   },
 
-  listarCompras: (req, res) => {
+  get: (req, res) => {
+    comprasDAO.listarCompras((err, result) => {
+      if (result) {
+        res.send(result)
+      } else {
+        res.send(JSON.stringify({result: "FAILED"}))
+      }
+    })
+  }, 
 
+  edit: (req, res) => {
+    let data = req.body
+    comprasDAO.editarCompra(data, (err, result) => {
+      if (err) { 
+        console.log(err)
+        res.send(JSON.stringify({result: "FAILED"}))
+      } else {
+        res.send(JSON.stringify({result: "SUCCESS"}))
+      }
+    })
   },
 
-  editarCompra: (req, res) => {
-
-  },
-
-  deletarCompra: (req, res) => {
-
+  delete: (req, res) => {
+    let data = req.body
+    comprasDAO.editarCompra(data, (err, result)=> {
+      if (!err) {
+        res.send(JSON.stringify({result: "SUCCESS"}))
+      } else {
+        res.send(JSON.stringify({result: "FAILED"}))
+      }
+    })
   }
 }

@@ -31,5 +31,20 @@ module.exports = {
     } else {
       callback("ERRO", null)
     }
+  },
+
+  listarCompras: function(callback) {
+    let SQL = "SELECT * FROM compra"
+    database.query(SQL, callback)
+  },
+
+  editarCompra: function(data, callback) {
+    let SQL = "UPDATE produto SET idProduto=?, cpfCliente=?, quantidadeProduto=?, precoProduto=? WHERE id=?"
+    database.query(SQL, [data["idProduto"], data["cpfCliente"], data["quantidade"], data["preco"], data["id"]], callback)
+  },
+
+  deletarCompra: function(id, callback) {
+    let SQL = "DELETE FROM compra WHERE id=?"
+    database.query(SQL, [id], callback)
   }
 }
