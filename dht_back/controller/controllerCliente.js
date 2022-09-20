@@ -24,13 +24,17 @@ const validarCPF = (cpf) => {
 const insert = async (req, res) => {
   let data = req.body;
   data["password"] = await bcrypt.hash(data["password"], 10);
-  clienteDAO.inserirCliente(data, (err, result) => {
-    if (err) {
-      res.send(JSON.stringify({ result: "FAILED" }));
-    } else {
-      res.send(JSON.stringify({ result: "SUCCESS" }));
-    }
-  });
+  if (validarCPF(data["cpf"])) {
+    clienteDAO.inserirCliente(data, (err, result) => {
+      if (err) {
+        res.send(JSON.stringify({ result: "FAILED", reason: err }));
+      } else {
+        res.send(JSON.stringify({ result: "SUCCESS" }));
+      }
+    });
+  } else {
+    res.send(JSON.stringify({ result: "FAILED", reason: "INVALID CPF" }));
+  }
 }
 
 const get = (req, res) => {

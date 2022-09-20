@@ -6,12 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "npx cypress run",
+    "cypress:open": "npx cypress open"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.19.1",
     "@chakra-ui/react": "^2.2.8",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "babel-jest": "^29.0.3",
+    "cypress": "^10.8.0",
     "formik": "^2.2.9",
     "framer-motion": "^6",
     "next": "12.2.5",

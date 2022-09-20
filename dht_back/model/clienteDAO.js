@@ -9,7 +9,7 @@ const database = mysql.createConnection ({
 
 database.query("CREATE TABLE IF NOT EXISTS cliente(\
   nome VARCHAR(100) NOT NULL,\
-  cpf CHAR(14) NOT NULL,\
+  cpf CHAR(14) NOT NULL UNIQUE,\
   email VARCHAR(100) NOT NULL UNIQUE,\
   dataNascimento datetime NOT NULL, \
   senha VARCHAR(150) NOT NULL,\
