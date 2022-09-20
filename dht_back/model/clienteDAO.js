@@ -29,7 +29,6 @@ module.exports = {
 
   inserirCliente: async function(data, callback) {
     let SQL = "INSERT INTO cliente (nome, cpf, email, dataNascimento, senha, admin) VALUES (?, ?, ?, ?, ?, ?)"
-    console.log(data)
     database.query(SQL, [data['name'], data['cpf'], data['email'], data['birthDate'], data['password'], data["admin"]], callback)
   },
 
@@ -46,5 +45,17 @@ module.exports = {
   deletarCliente: function(cpf, callback) {
     let SQL = "DELETE FROM cliente WHERE cpf=?"
     database.query(SQL, [cpf], callback)
+  },
+
+  buscarCliente: async function(cpf) {
+    let SQL = "SELECT * FROM cliente WHERE cpf=?"
+    return new Promise((resolve, reject) => {
+      database.query(SQL, [cpf], (err, result) => {
+        if (result)
+          return resolve(result)
+        else
+          return reject(err)
+      })
+    })
   }
 }

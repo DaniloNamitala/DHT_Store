@@ -15,7 +15,7 @@ database.query(
   cpfCliente CHAR(14) NOT NULL,\
   precoProduto DOUBLE NOT NULL,\
   quantidadeProduto INTEGER NOT NULL,\
-  endereco CHAR(25) NOT NULL,\
+  endereco CHAR(50) NOT NULL,\
   cidade CHAR(25) NOT NULL,\
   cep CHAR(25) NOT NULL,\
   CONSTRAINT fk_cpf FOREIGN KEY (cpfCliente) REFERENCES cliente(cpf),\
@@ -28,26 +28,21 @@ database.query(
 
 module.exports = {
   inserirCompra: async function (data, callback) {
-    let produto = await produtoDAO.buscarProduto(data["idProduto"]);
-    if (produto.length > 0) {
-      let SQL =
-        "INSERT INTO compra (idProduto, cpfCliente, quantidadeProduto, precoProduto, endereco, cidade , cep) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    let SQL =
+      "INSERT INTO compra (idProduto, cpfCliente, quantidadeProduto, precoProduto, endereco, cidade , cep) VALUES (?, ?, ?, ?, ?, ?, ?)";
       database.query(
-        SQL,
-        [
-          data["idProduto"],
-          data["cpfCliente"],
-          data["quantidade"],
-          produto[0].preco,
-          data["endereco"],
-          data["cidade"],
-          data["cep"],
-        ],
-        callback
-      );
-    } else {
-      callback("ERRO", null);
-    }
+      SQL,
+      [
+        data["idProduto"],
+        data["cpfCliente"],
+        data["quantidade"],
+        data["preco"],
+        data["endereco"],
+        data["cidade"],
+        data["cep"],
+      ],
+      callback
+    );
   },
 
   listarCompras: function (callback) {
