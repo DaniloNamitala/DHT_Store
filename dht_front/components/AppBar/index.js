@@ -77,7 +77,7 @@ export const AppBar = ({
   return (
     <Box d="flex" justifyContent="center">
       <Flex bg={baseColor} height="4rem" alignItems="center">
-        <Button colorScheme="yellow" onClick={onOpen}>
+        <Button id="button-menu" colorScheme="yellow" onClick={onOpen}>
           Menu
         </Button>
       </Flex>
@@ -99,7 +99,7 @@ export const AppBar = ({
             {drawer[current] ? drawer[current] : listMenu()}
           </DrawerBody>
           <DrawerFooter>
-            <Link href="/">Deslogar</Link>
+            <Link id="logout" href="/">Deslogar</Link>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

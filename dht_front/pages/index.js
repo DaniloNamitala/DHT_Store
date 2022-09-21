@@ -80,7 +80,7 @@ export default function Login() {
                   </Button>
                 </VStack>
                 <Center mt="2rem">
-                  <Link href="/cadastro">Cadastre-se</Link>
+                  <Link href="/cadastro" id="cadastro">Cadastre-se</Link>
                 </Center>
               </Box>
             </form>
